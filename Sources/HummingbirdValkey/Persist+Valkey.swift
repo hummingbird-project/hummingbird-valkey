@@ -31,8 +31,8 @@ public struct ValkeyPersistDriver<Client: ValkeyClientProtocol & Sendable>: Pers
 
     /// create new key with value. If key already exist throw `PersistError.duplicate` error
     public func create(key: String, value: some Codable, expires: Duration?) async throws {
-        let expiration: SET<ByteBuffer>.Expiration? = expires.map { .milliseconds(Int($0 / .milliseconds(1))) }
-        let jsonBuffer = try ByteBuffer(bytes: JSONEncoder().encode(value))
+        let expiration: SET<Data>.Expiration? = expires.map { .milliseconds(Int($0 / .milliseconds(1))) }
+        let jsonBuffer = try JSONEncoder().encode(value)
         if try await self.valkey.set(.init(key), value: jsonBuffer, condition: .nx, expiration: expiration) != nil {
             return
         } else {
@@ -42,14 +42,13 @@ public struct ValkeyPersistDriver<Client: ValkeyClientProtocol & Sendable>: Pers
 
     /// set value for key. If value already exists overwrite it
     public func set(key: String, value: some Codable, expires: Duration?) async throws {
-        let jsonBuffer = try ByteBuffer(bytes: JSONEncoder().encode(value))
+        let jsonBuffer = try JSONEncoder().encode(value)
         if let expires {
-            let expiration = SET<ByteBuffer>.Expiration.milliseconds(Int(expires / .milliseconds(1)))
             _ = try await self.valkey.set(
                 .init(key),
                 value: jsonBuffer,
                 condition: .none,
-                expiration: expiration
+                expiration: .milliseconds(Int(expires / .milliseconds(1)))
             )
         } else {
             _ = try await self.valkey.set(
