@@ -11,6 +11,7 @@ let defaultSwiftSettings: [SwiftSetting] =
 
 let package = Package(
     name: "hummingbird-valkey",
+    platforms: [.macOS(.v14), .iOS(.v17), .macCatalyst(.v17), .tvOS(.v17), .visionOS(.v1)],
     products: [
         .library(name: "HummingbirdValkey", targets: ["HummingbirdValkey"])
     ],
