@@ -3,9 +3,14 @@
 
 import PackageDescription
 
+let defaultSwiftSettings: [SwiftSetting] =
+    [
+        .swiftLanguageMode(.v6),
+        .enableExperimentalFeature("AvailabilityMacro=hbValkey 1.0:macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0"),
+    ]
+
 let package = Package(
     name: "hummingbird-valkey",
-    platforms: [.macOS(.v15), .iOS(.v18), .tvOS(.v18)],
     products: [
         .library(name: "HummingbirdValkey", targets: ["HummingbirdValkey"])
     ],
@@ -19,7 +24,8 @@ let package = Package(
             dependencies: [
                 .product(name: "Hummingbird", package: "hummingbird"),
                 .product(name: "Valkey", package: "valkey-swift"),
-            ]
+            ],
+            swiftSettings: defaultSwiftSettings
         ),
         .testTarget(
             name: "HummingbirdValkeyTests",
@@ -27,7 +33,8 @@ let package = Package(
                 .byName(name: "HummingbirdValkey"),
                 .product(name: "Hummingbird", package: "hummingbird"),
                 .product(name: "HummingbirdTesting", package: "hummingbird"),
-            ]
+            ],
+            swiftSettings: defaultSwiftSettings
         ),
     ]
 )

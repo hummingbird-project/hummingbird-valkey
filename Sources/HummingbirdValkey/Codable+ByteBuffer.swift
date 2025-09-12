@@ -114,7 +114,7 @@ extension JSONDecoder {
     /// - Returns: The decoded object.
     @usableFromInline
     func _decode<T: Decodable>(_ type: T.Type, from buffer: ByteBuffer) throws -> T {
-        try buffer.getJSONDecodable(
+        try buffer._getJSONDecodable(
             T.self,
             decoder: self,
             at: buffer.readerIndex,

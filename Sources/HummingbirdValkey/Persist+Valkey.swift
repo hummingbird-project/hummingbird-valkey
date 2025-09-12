@@ -22,6 +22,7 @@ import Foundation
 #endif
 
 /// Valkey/Redis driver for persist system for storing persistent cross request key/value pairs
+@available(hbValkey 1.0, *)
 public struct ValkeyPersistDriver<Client: ValkeyClientProtocol & Sendable>: PersistDriver {
     let valkey: Client
 

@@ -19,6 +19,7 @@ import Logging
 import Valkey
 import XCTest
 
+@available(hbValkey 1.0, *)
 final class PersistTests: XCTestCase {
     static let valkeyHostname = Environment().get("VALKEY_HOSTNAME") ?? "localhost"
 
