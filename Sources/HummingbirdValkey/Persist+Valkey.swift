@@ -65,7 +65,7 @@ public struct ValkeyPersistDriver<Client: ValkeyClientProtocol & Sendable>: Pers
     public func get<Object: Codable>(key: String, as object: Object.Type) async throws -> Object? {
         do {
             if let value = try await self.valkey.get(.init(key)) {
-                return try JSONDecoder()._decode(Object.self, from: value)
+                return try JSONDecoder()._decode(Object.self, from: ByteBuffer(value))
             }
             return nil
         } catch is DecodingError {
