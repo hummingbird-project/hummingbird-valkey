@@ -68,7 +68,7 @@ public struct ValkeyPersistDriver<Client: ValkeyClientProtocol & Sendable>: Pers
     }
 
     /// get value and time to live for key
-    public func getWithTTL<Object: Codable>(key: String, as object: Object.Type) async throws -> (object: Object?, ttl: Duration?) {
+    public func getWithTTL<Object: Codable>(key: String, as object: Object.Type) async throws -> (object: Object, ttl: Duration?)? {
         do {
             var commands: [any ValkeyCommand] = []
             commands.append(GET(.init(key)))
@@ -81,7 +81,7 @@ public struct ValkeyPersistDriver<Client: ValkeyClientProtocol & Sendable>: Pers
                 let object = try JSONDecoder()._decode(Object.self, from: buffer)
                 return (object, ttl >= 0 ? .milliseconds(ttl) : nil)
             }
-            return (nil, nil)
+            return nil
         } catch is DecodingError {
             throw PersistError.invalidConversion
         }
