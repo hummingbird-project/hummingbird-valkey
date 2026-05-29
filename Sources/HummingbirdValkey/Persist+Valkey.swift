@@ -67,6 +67,26 @@ public struct ValkeyPersistDriver<Client: ValkeyClientProtocol & Sendable>: Pers
         }
     }
 
+    /// get value and time to live for key
+    public func getWithTTL<Object: Codable>(key: String, as object: Object.Type) async throws -> (object: Object, ttl: Duration?)? {
+        do {
+            var commands: [any ValkeyCommand] = []
+            commands.append(GET(.init(key)))
+            commands.append(PTTL(.init(key)))
+            let results = await self.valkey.execute(commands)
+
+            if let buffer = try results[0].get().decode(as: ByteBuffer?.self),
+                let ttl = try results[1].get().decode(as: Int?.self)
+            {
+                let object = try JSONDecoder()._decode(Object.self, from: buffer)
+                return (object, ttl >= 0 ? .milliseconds(ttl) : nil)
+            }
+            return nil
+        } catch is DecodingError {
+            throw PersistError.invalidConversion
+        }
+    }
+
     /// remove key
     public func remove(key: String) async throws {
         _ = try await self.valkey.del(keys: [.init(key)])
