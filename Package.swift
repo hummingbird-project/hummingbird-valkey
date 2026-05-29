@@ -16,7 +16,7 @@ let package = Package(
         .library(name: "HummingbirdValkey", targets: ["HummingbirdValkey"])
     ],
     dependencies: [
-        .package(url: "https://github.com/hummingbird-project/hummingbird.git", branch: "get-with-ttl"),
+        .package(url: "https://github.com/hummingbird-project/hummingbird.git", from: "2.25.0"),
         .package(url: "https://github.com/valkey-io/valkey-swift.git", from: "1.0.0"),
     ],
     targets: [
